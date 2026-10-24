@@ -27,25 +27,25 @@ DEMO_DATA = {
 }
 
 
-# Initialize with user city input and start date 
+# Initialize with user city input and start date
 city_input = input("Enter your city:").strip().title()
 startdate_input = input("Enter the start date (use: YYYY-MM-DD): ")
 
 
 def dates(startdate_input):
-    """Converts user input start date to ISO format and calculates 
+    """Converts user input start date to ISO format and calculates
     end date of 7 day period"""
     try:
         # Parse user input date to a datetime object
         start_date = datetime.strptime(
             startdate_input + " 00:00:00", "%Y-%m-%d %H:%M:%S"
         )
-    # Check for properly formated start date YYYY-MM-DD    
+    # Check for properly formatted start date YYYY-MM-DD
     except ValueError:
         raise ValueError("Invalid date format! Please use YYYY-MM-DD "
               "(e.g., 2026-10-25).")
 
-    # Check start date must be present or in future(upto 2 years)
+    # Check start date must be today or in future (up to 2 years)
     if start_date.date() < datetime.now().date():
         raise ValueError("Start date must be today or within 2 years!")
 
@@ -94,7 +94,7 @@ def data_set(page_number):
     else:
         try:
             url = "https://app.ticketmaster.com/discovery/v2/events.json"
-            # Using get method to set enpoint(url) and shape data with filters
+            # Using get method to set endpoint(url) and shape data with filters
             response = requests.get(url, params=filters, timeout=10)
             # Checking status code value to see if pull sucessful
             if response.status_code != 200:
@@ -109,7 +109,7 @@ def data_set(page_number):
     return data
 
 
-# Pagination use page 0 to get totalPages then loop through remaining
+# Pagination use page 0 to get totalPages, then loop through remaining
 all_events = []
 page = 0
 page_data = data_set(page)
@@ -119,10 +119,10 @@ total_pages = page_data["page"]["totalPages"]
 if "_embedded" in page_data:
     all_events.extend(page_data["_embedded"]["events"])
 
-# Looping through pages from 1 to last page(exclusive)
+# Looping through pages from 1 to last page (exclusive)
 for page in range(1, total_pages):
     page_data = data_set(page)
-    # Add events into all_events(holds every event from every page)
+    # Add events into all_events (holds every event from every page)
     if "_embedded" in page_data:
         all_events.extend(page_data["_embedded"]["events"])
 
@@ -139,7 +139,7 @@ for event in all_events:
         segment = event["classifications"][0]["segment"]["name"]
     except (KeyError, IndexError):
         continue  # Skip events with no classification
-    
+
     if segment == "Sports":
         sports = sports + 1
     if segment == "Music":
