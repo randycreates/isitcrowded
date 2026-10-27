@@ -35,10 +35,21 @@ The user enters a city and a start date. The program calculates a seven-day wind
    ```
    If it prints `Python 3.x.x`, you're good. If not, download Python 3 from [python.org](https://www.python.org/).
 
-2. **Create a project folder.**
-   Name it whatever you like. Both files below need to live in this folder.
+2. **Get the project files.**
+   Choose one of these options:
+   - **a. Clone the repository (recommended if you have Git):**
+   Open your terminal and run:
 
-3. **Download `isitcrowded.py`** from this repository and save it into the folder.
+   ```
+   git clone https://github.com/randycreates/isitcrowded.git
+   cd isitcrowded
+   ```
+   - **b. Download the ZIP:**
+   Click the green **Code** button on the repository page, then select **Download ZIP**.
+   Unzip the file into a folder of your choice.
+
+3. **Confirm the files are in the same folder.**
+   Whether you cloned or unzipped, `isitcrowded.py` and (if you create one) `.env` must live in the same folder.
 
 4. **Install dependencies.**
    In your terminal type:
