@@ -39,7 +39,6 @@ The user enters a city and a start date. The program calculates a seven-day wind
    Choose one of these options:
    - **a. Clone the repository (recommended if you have Git):**
    Open your terminal and run:
-
    ```
    git clone https://github.com/randycreates/isitcrowded.git
    cd isitcrowded
@@ -49,7 +48,7 @@ The user enters a city and a start date. The program calculates a seven-day wind
    Unzip the file into a folder of your choice.
 
 3. **Confirm the files are in the same folder.**
-   Whether you cloned or unzipped, `isitcrowded.py` and (if you create one) `.env` must live in the same folder.
+   Whether you cloned or unzipped, `isitcrowded.py` should be in a folder you can find from the terminal.
 
 4. **Install dependencies.**
    In your terminal type:
@@ -57,11 +56,11 @@ The user enters a city and a start date. The program calculates a seven-day wind
    pip install requests python-dotenv
    ```
 
-5. **Get a free Ticketmaster API key.(Optional)**
+5. **Get a free Ticketmaster API key. (Optional)**
    Visit [developer.ticketmaster.com](https://developer.ticketmaster.com/) and sign up for a free developer account. You'll get an API key. If you skip this step, the program runs on demo data.
 
 6. **Create a `.env` file.(Skip this step if not using API key)**
-   In the same folder as `isitcrowded.py`, create a file called `.env` (note the leading dot). Add this line:
+   In the same folder as `isitcrowded.py`, create a file called `.env` (note the leading dot). Add this line to your file:
    ```
    TICKETMASTER_API_KEY=your_key_here
    ```

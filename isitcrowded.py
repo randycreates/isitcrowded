@@ -1,7 +1,12 @@
-import requests
+"""Is It Crowded - a tool that counts events by category
+for a given city and a seven-day period"""
+
 import os
-from dotenv import load_dotenv
 from datetime import datetime, timedelta
+
+import requests
+from dotenv import load_dotenv
+
 
 # Reads the .env file to import API key
 load_dotenv()
@@ -27,18 +32,19 @@ DEMO_DATA = {
 }
 
 
-def dates(startdate_input):
+def dates(date_string):
     """Converts user input start date to ISO format and calculates
     end date of 7 day period"""
     try:
         # Parse user input date to a datetime object
         start_date = datetime.strptime(
-            startdate_input + " 00:00:00", "%Y-%m-%d %H:%M:%S"
+            date_string + " 00:00:00", "%Y-%m-%d %H:%M:%S"
         )
+
     # Check for properly formatted start date YYYY-MM-DD
-    except ValueError:
+    except ValueError as exc:
         raise ValueError("Invalid date format! Please use YYYY-MM-DD "
-              "(e.g., 2026-10-25).")
+              "(e.g., 2026-10-25).") from exc
 
     # Check start date must be today or in future (up to 2 years)
     if start_date.date() < datetime.now().date():
@@ -49,13 +55,13 @@ def dates(startdate_input):
               "date within 2 years")
 
     # Converts start datetime object to end date
-    end_date = start_date + timedelta(days=7)
+    calculated_end = start_date + timedelta(days=7)
 
     # Converts start & end date to ISO format for params dictionary
     start_iso = start_date.strftime("%Y-%m-%dT%H:%M:%SZ")
-    end_iso = end_date.strftime("%Y-%m-%dT%H:%M:%SZ")
+    end_iso = calculated_end.strftime("%Y-%m-%dT%H:%M:%SZ")
 
-    return start_iso, end_iso, end_date
+    return start_iso, end_iso, calculated_end
 
 
 def data_set(page_number, filters):
@@ -75,7 +81,10 @@ def data_set(page_number, filters):
             response = requests.get(url, params=filters, timeout=10)
             # Checking status code value to see if pull sucessful
             if response.status_code != 200:
-                raise Exception(f"API returned status {response.status_code}")
+                raise requests.exceptions.HTTPError(
+                    f"API returned status {response.status_code}"
+                )
+
             # If success, returned in JSON and converted to dictionary below
             data = response.json()
         except Exception as e:
