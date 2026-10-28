@@ -7,16 +7,13 @@ from datetime import datetime, timedelta
 import requests
 from dotenv import load_dotenv
 
-
 # Reads the .env file to import API key
 load_dotenv()
 API_KEY = os.getenv("TICKETMASTER_API_KEY")
 
 # Demo data set used when no API key is used
 DEMO_DATA = {
-    "page": {
-        "totalPages": 1
-    },
+    "page": {"totalPages": 1},
     "_embedded": {
         "events": [
             {"classifications": [{"segment": {"name": "Sports"}}]},
@@ -26,9 +23,9 @@ DEMO_DATA = {
             {"classifications": [{"segment": {"name": "Music"}}]},
             {"classifications": [{"segment": {"name": "Arts & Theatre"}}]},
             {"classifications": [{"segment": {"name": "Family"}}]},
-            {"classifications": [{"segment": {"name": "Film"}}]}
-            ]
-    }
+            {"classifications": [{"segment": {"name": "Film"}}]},
+        ]
+    },
 }
 
 
@@ -43,16 +40,18 @@ def dates(date_string):
 
     # Check for properly formatted start date YYYY-MM-DD
     except ValueError as exc:
-        raise ValueError("Invalid date format! Please use YYYY-MM-DD "
-              "(e.g., 2026-10-25).") from exc
+        raise ValueError(
+            "Invalid date format! Please use YYYY-MM-DD " "(e.g., 2026-10-25)."
+        ) from exc
 
     # Check start date must be today or in future (up to 2 years)
     if start_date.date() < datetime.now().date():
         raise ValueError("Start date must be today or within 2 years out!")
 
     if start_date.date() > datetime.now().date() + timedelta(days=730):
-        raise ValueError("Date is too far in advance! Please enter a "
-              "date within 2 years")
+        raise ValueError(
+            "Date is too far in advance! Please enter a " "date within 2 years"
+        )
 
     # Converts start datetime object to end date
     calculated_end = start_date + timedelta(days=7)
@@ -114,7 +113,7 @@ while True:
         "startDateTime": start_iso,
         "endDateTime": end_iso,
         "size": 200,
-        "page": 0
+        "page": 0,
     }
 
     # Pagination use page 0 to get totalPages, then loop through remaining
@@ -165,9 +164,11 @@ while True:
     format_end_d = end_d.strftime("%Y-%m-%d")
 
     if total == 0:
-        print(f"No events found for '{city_input}' in that date range. "
-              "Check city spelling. If correct, try a nearby city or "
-              "a different start date.")
+        print(
+            f"No events found for '{city_input}' in that date range. "
+            "Check city spelling. If correct, try a nearby city or "
+            "a different start date."
+        )
     else:
         print(f"\nWeek of {startdate_input} to {format_end_d}")
         print(f"City: {city_input}\n")
