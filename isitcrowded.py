@@ -94,95 +94,96 @@ def data_set(page_number, filters):
     return data
 
 
-while True:
-    # Initialize with user city input and start date
-    city_input = input("Enter your city:").strip().title()
-    startdate_input = input("Enter the start date (use: YYYY-MM-DD): ")
+if __name__ == "__main__":
+    while True:
+        # Initialize with user city input and start date
+        city_input = input("Enter your city:").strip().title()
+        startdate_input = input("Enter the start date (use: YYYY-MM-DD): ")
 
-    # Call dates function and catch failure if due to improper date input
-    try:
-        start_iso, end_iso, end_date = dates(startdate_input)
-    except ValueError as e:
-        print(e)
-        continue
+        # Call dates function and catch failure if due to improper date input
+        try:
+            start_iso, end_iso, end_date = dates(startdate_input)
+        except ValueError as e:
+            print(e)
+            continue
 
-    # Filters to be used in key word arguments
-    filters = {
-        "apikey": API_KEY,
-        "city": city_input,
-        "startDateTime": start_iso,
-        "endDateTime": end_iso,
-        "size": 200,
-        "page": 0,
-    }
+        # Filters to be used in key word arguments
+        filters = {
+            "apikey": API_KEY,
+            "city": city_input,
+            "startDateTime": start_iso,
+            "endDateTime": end_iso,
+            "size": 200,
+            "page": 0,
+        }
 
-    # Pagination use page 0 to get totalPages, then loop through remaining
-    all_events = []
-    page = 0
-    page_data = data_set(page, filters)
-    # Read how many pages exist from response page block
-    total_pages = page_data["page"]["totalPages"]
-    # Add page 0's events into all_events
-    if "_embedded" in page_data:
-        all_events.extend(page_data["_embedded"]["events"])
-
-    # Looping through pages from 1 to last page (exclusive)
-    for page in range(1, total_pages):
+        # Pagination use page 0 to get totalPages, then loop through remaining
+        all_events = []
+        page = 0
         page_data = data_set(page, filters)
-        # Add events into all_events (holds every event from every page)
+        # Read how many pages exist from response page block
+        total_pages = page_data["page"]["totalPages"]
+        # Add page 0's events into all_events
         if "_embedded" in page_data:
             all_events.extend(page_data["_embedded"]["events"])
 
-    # Using all_events to break down event type
-    sports = 0
-    music = 0
-    arts = 0
-    family = 0
-    film = 0
+        # Looping through pages from 1 to last page (exclusive)
+        for page in range(1, total_pages):
+            page_data = data_set(page, filters)
+            # Add events into all_events (holds every event from every page)
+            if "_embedded" in page_data:
+                all_events.extend(page_data["_embedded"]["events"])
 
-    for event in all_events:
-        # Extracting segment type by assigning to variable segment
-        try:
-            segment = event["classifications"][0]["segment"]["name"]
-        except (KeyError, IndexError):
-            continue  # Skip events with no classification
+        # Using all_events to break down event type
+        sports = 0
+        music = 0
+        arts = 0
+        family = 0
+        film = 0
 
-        if segment == "Sports":
-            sports = sports + 1
-        if segment == "Music":
-            music = music + 1
-        if segment == "Arts & Theatre":
-            arts = arts + 1
-        if segment == "Family":
-            family = family + 1
-        if segment == "Film":
-            film = film + 1
+        for event in all_events:
+            # Extracting segment type by assigning to variable segment
+            try:
+                segment = event["classifications"][0]["segment"]["name"]
+            except (KeyError, IndexError):
+                continue  # Skip events with no classification
 
-    # Formatting outputs & converting datetime object to string
-    total = sports + music + arts + family + film
-    end_d = end_date - timedelta(days=1)
-    format_end_d = end_d.strftime("%Y-%m-%d")
+            if segment == "Sports":
+                sports = sports + 1
+            if segment == "Music":
+                music = music + 1
+            if segment == "Arts & Theatre":
+                arts = arts + 1
+            if segment == "Family":
+                family = family + 1
+            if segment == "Film":
+                film = film + 1
 
-    if total == 0:
-        print(
-            f"No events found for '{city_input}' in that date range. "
-            "Check city spelling. If correct, try a nearby city or "
-            "a different start date."
-        )
-    else:
-        print(f"\nWeek of {startdate_input} to {format_end_d}")
-        print(f"City: {city_input}\n")
+        # Formatting outputs & converting datetime object to string
+        total = sports + music + arts + family + film
+        end_d = end_date - timedelta(days=1)
+        format_end_d = end_d.strftime("%Y-%m-%d")
 
-        print(f"Total events: {total}\n")
+        if total == 0:
+            print(
+                f"No events found for '{city_input}' in that date range. "
+                "Check city spelling. If correct, try a nearby city or "
+                "a different start date."
+            )
+        else:
+            print(f"\nWeek of {startdate_input} to {format_end_d}")
+            print(f"City: {city_input}\n")
 
-        print("Breakdown:")
-        print(f"Sports: {sports}")
-        print(f"Music: {music}")
-        print(f"Arts & Theatre: {arts}")
-        print(f"Family: {family}")
-        print(f"Film: {film}")
+            print(f"Total events: {total}\n")
 
-    # Again lets user repeat program by inputting y/n
-    again = input("Search again? (y/n): ")
-    if again.lower() != "y":
-        break
+            print("Breakdown:")
+            print(f"Sports: {sports}")
+            print(f"Music: {music}")
+            print(f"Arts & Theatre: {arts}")
+            print(f"Family: {family}")
+            print(f"Film: {film}")
+
+        # Again lets user repeat program by inputting y/n
+        again = input("Search again? (y/n): ")
+        if again.lower() != "y":
+            break
