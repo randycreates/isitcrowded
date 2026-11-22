@@ -1,16 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
+<style>
+  .error { color: red; }
+</style>
     <title>Is It Crowded</title>
 </head>
 <body>
-	<h1>Is It Crowded?</h1>
+	<h1 style="margin-bottom: 4px;">Is It Crowded?</h1>
+	<p style="margin-top: 8px;"><i>The numerical summary tool for Ticketmaster events over any given 7-day period.</i></p>
+	<p>Enter a city - then select or enter your start date. The date must be today or later, and within the next 2 years.</p>
+	{% if error %}
+	<p class="error">{{ error }}</p>
+	{% endif %}
 	<form method="POST" action="/">
-		<label for="city">Enter your city:</label>
+		<label for="city"><b>City:</b></label>
 		<input type="text" id="city" name="city" required>
-		<label for="date">Select your start date:</label>
-		<input type="date" id="date" name="date" required>
-		<button type="submit">Check</button>
+		<label for="date"><b>Select or enter your start date:</b></label>
+		<input type="date" id="date" name="date" min="{{ min_date }}" max="{{ max_date }}" required>
+		<button type="submit">Submit</button>
 	</form>
+<p><small><i>Created by Randy Jones Jr.</i></small></p>
 </body>
 </html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+	.notice { color: crimson; }
+	.categories {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1.5rem;
+	}
+	.category {
+		min-width: 220px;
+	}
+	.category h4 {
+		margin: 0 0 0.25rem 0;
+	}
+	.category ul {
+		margin: 0;
+		padding-left: 1.2rem;
+	}
+</style>
+    <title>Is It Crowded Results</title>
+</head>
+<body>
+	<h1 style="margin-bottom: 4px;">Is It Crowded?</h1>
+    <p style="margin-top: 8px;"><i>The numerical summary tool for Ticketmaster events over any given 7-day period.</i></p>
+	{% if data_source == "demo" %}
+	<p class="notice"><b>Demo mode: no API key found. Showing sample data. To use live data, see API instructions in README.</b></p>
+	{% elif data_source == "demo_fallback" %}
+	<p class="notice"><b>Demo mode: the API call failed. Showing sample data.</b></p>
+	{% endif %}
+	{% if total == 0 %}
+	<p class="notice">No events found for <b>'{{ display_city }}'</b> in that date range. Check city spelling. If correct, try a nearby city or a different start date.</p>
+	<a href="/">Search again</a>
+	{% else %}
+
+	<p>Week of: <b>{{ display_start }}</b> to <b>{{ display_end }}</b></p>
+	<p>City: <b>{{ display_city }}</b></p>
+
+	<h2>Total events: {{ total }}</h2>
+    
+	<h3>Daily Breakdown:</h3>
+	<ul> 
+	{% for day in daily_breakdown %}
+		<li>({{ day.date[5:] }}) {{ day.weekday }}: {{ day.count}}</li>
+	{% endfor %}
+    </ul>
+    
+	<h3 style="margin-bottom: 8px;">Event Category Breakdown:</h3>
+	<div class="categories">
+	{% for segment, data in genre_breakdown.items() %}
+	<div class="category">
+			<h4>{{ segment }} ({{ data.total }})</h4>
+			<ul>
+			{% for genre, count in data.genres.items() %}
+					<li>{{ genre }}: {{ count }}</li>
+			{% endfor %}
+			</ul>
+	</div>
+	{% endfor %}
+	</div>
+
+	<a href="/">Search again</a>
+	{% endif %}
+</body>
+</html>
